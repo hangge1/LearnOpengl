@@ -96,9 +96,13 @@ int main()
     const std::string vertexShaderSource =
         "#version 330 core\n"
         "layout(location = 0) in vec3 position;\n"
+        "layout(location = 1) in vec3 color;\n"
+        "out vec3 vColor;\n"
+        "\n"
         "void main()\n"
         "{\n"
         "    gl_Position = vec4(position,1.0);\n"
+        "    vColor = color;\n"
         "}\n";
     
     GLuint vs = CompileShader(vertexShaderSource, GL_VERTEX_SHADER);
@@ -111,10 +115,10 @@ int main()
     const std::string fragmentShaderSource =
         "#version 330 core\n"
         "out vec4 color;\n"
-        "uniform vec4 u_Color;\n"
+        "in vec3 vColor;\n"
         "void main()\n"
         "{\n"
-        "    color = u_Color;\n"
+        "    color = vec4(vColor,1.0);\n"
         "}\n";
 
     GLuint fs = CompileShader(fragmentShaderSource, GL_FRAGMENT_SHADER);
@@ -136,10 +140,10 @@ int main()
     };*/
 
     GLfloat vertices[] = {
-    0.5f, 0.5f, 0.0f,   // 右上角
-    0.5f, -0.5f, 0.0f,  // 右下角
-    -0.5f, -0.5f, 0.0f, // 左下角
-    -0.5f, 0.5f, 0.0f   // 左上角
+         0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // 右上角
+         0.5f,-0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // 右下角
+        -0.5f,-0.5f, 0.0f, 0.0f, 0.0f, 1.0f, // 左下角
+        -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 0.0f  // 左上角
     };
 
     GLuint indices[] = { // 注意索引从0开始! 
@@ -167,13 +171,14 @@ int main()
             //(3)数据基本类型
             //(4)一个顶点属性的总步长
             //(5)当前属性的起始偏移
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
         glEnableVertexAttribArray(0);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GL_FLOAT)));
+        glEnableVertexAttribArray(1);
     //4. 解绑VAO
     glBindVertexArray(0);
 
-    float color[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
-    int flag = 1;
+
     while (!glfwWindowShouldClose(window))
     {
         // 检查事件
@@ -187,16 +192,6 @@ int main()
 
         //渲染三角形
         glUseProgram(shaderProgram);
-        //修改颜色Uniform变量
-        if (color[0] > 1.0f) flag = -1;
-        else if (color[0] < 0.0f) flag = 1;
-        color[0] += 0.1 * flag;
-        std::cout << "color[0]" << color[0] << std::endl;
-
-        GLint ColorPosition = glGetUniformLocation(shaderProgram, "u_Color");
-        glUniform4f(ColorPosition, color[0], color[1], color[2], color[3]);
-
-
         glBindVertexArray(VAO);
         //glDrawArrays(GL_TRIANGLES, 0, 3);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
