@@ -111,9 +111,10 @@ int main()
     const std::string fragmentShaderSource =
         "#version 330 core\n"
         "out vec4 color;\n"
+        "uniform vec4 u_Color;\n"
         "void main()\n"
         "{\n"
-        "    color = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+        "    color = u_Color;\n"
         "}\n";
 
     GLuint fs = CompileShader(fragmentShaderSource, GL_FRAGMENT_SHADER);
@@ -171,10 +172,14 @@ int main()
     //4. 解绑VAO
     glBindVertexArray(0);
 
+    float color[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+    int flag = 1;
     while (!glfwWindowShouldClose(window))
     {
         // 检查事件
         glfwPollEvents();
+
+        
 
         // 清空
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -182,6 +187,16 @@ int main()
 
         //渲染三角形
         glUseProgram(shaderProgram);
+        //修改颜色Uniform变量
+        if (color[0] > 1.0f) flag = -1;
+        else if (color[0] < 0.0f) flag = 1;
+        color[0] += 0.1 * flag;
+        std::cout << "color[0]" << color[0] << std::endl;
+
+        GLint ColorPosition = glGetUniformLocation(shaderProgram, "u_Color");
+        glUniform4f(ColorPosition, color[0], color[1], color[2], color[3]);
+
+
         glBindVertexArray(VAO);
         //glDrawArrays(GL_TRIANGLES, 0, 3);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
