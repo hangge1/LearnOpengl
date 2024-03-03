@@ -6,8 +6,8 @@
     <ClCompile Include="src\Renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\shader\vertex.shader" />
-    <None Include="res\shader\fragment.shader" />
+    <None Include="res\shader\default.fragment" />
+    <None Include="res\shader\default.vertex" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\shader.h" />

@@ -46,7 +46,7 @@ int main()
         return -1;
     }
     
-    Shader shader("res/shader/vertex.shader", "res/shader/fragment.shader");
+    
 
 
     GLfloat vertices[] = {
@@ -88,6 +88,7 @@ int main()
     //4. ½â°óVAO
     glBindVertexArray(0);
 
+    Shader shader("res/shader/default.vertex", "res/shader/default.fragment");
 
     while (!glfwWindowShouldClose(window))
     {
