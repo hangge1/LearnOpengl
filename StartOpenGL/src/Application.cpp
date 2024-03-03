@@ -129,13 +129,13 @@ int main()
     }
 
     GLfloat vertices[] = {
-        -0.5f,  0.0f, 0.0f,
+        -1.0f,  0.0f, 0.0f,
          0.0f,  0.0f, 0.0f,
         -0.5f,  0.5f, 0.0f,
-
+   
          0.0f,  0.0f, 0.0f,
-         0.0f,  0.5f, 0.0f,
-        -0.5f,  0.5f, 0.0f
+         1.0f,  0.0f, 0.0f,
+         0.5f,  0.5f, 0.0f
     };
 
     //GLuint indices[] = { // 注意索引从0开始! 
@@ -143,15 +143,15 @@ int main()
     //    1, 2, 3  // 第二个三角形
     //};
 
-    //初始化VBO VAO 
-    GLuint VAO;
-    glGenVertexArrays(1, &VAO);
-    glBindVertexArray(VAO);
-        GLuint VBO;
-        glGenBuffers(1, &VBO);
+    //初始化VBO1 VAO1 
+    GLuint VAO1;
+    glGenVertexArrays(1, &VAO1);
+    glBindVertexArray(VAO1);
+        GLuint VBO1;
+        glGenBuffers(1, &VBO1);
         // 2. 把顶点数组复制到缓冲中供OpenGL使用
-        glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, VBO1);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) / 2, vertices, GL_STATIC_DRAW);
         //3. EBO
         /*GLuint EBO;
         glGenBuffers(1, &EBO);
@@ -168,6 +168,33 @@ int main()
     //4. 解绑VAO
     glBindVertexArray(0);
 
+    //==========================================================================
+    //初始化VBO2 VAO2
+    GLuint VAO2;
+    glGenVertexArrays(1, &VAO2);
+    glBindVertexArray(VAO2);
+    GLuint VBO2;
+    glGenBuffers(1, &VBO2);
+    // 2. 把顶点数组复制到缓冲中供OpenGL使用
+    glBindBuffer(GL_ARRAY_BUFFER, VBO2);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) / 2, vertices + 9, GL_STATIC_DRAW);
+    //3. EBO
+    /*GLuint EBO;
+    glGenBuffers(1, &EBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);*/
+    //4. 设置顶点属性指针
+        //(1)属性index
+        //(2)count
+        //(3)数据基本类型
+        //(4)一个顶点属性的总步长
+        //(5)当前属性的起始偏移
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+    glEnableVertexAttribArray(0);
+    //4. 解绑VAO
+    glBindVertexArray(0);
+
+
     while (!glfwWindowShouldClose(window))
     {
         // 检查事件
@@ -177,10 +204,17 @@ int main()
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        //渲染三角形
+        //渲染三角形1
         glUseProgram(shaderProgram);
-        glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glBindVertexArray(VAO1);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+        //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        glBindVertexArray(0);
+
+        //渲染三角形2
+        glUseProgram(shaderProgram);
+        glBindVertexArray(VAO2);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
         //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
 
