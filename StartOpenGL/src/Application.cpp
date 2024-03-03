@@ -107,7 +107,7 @@ int main()
         return -2;
     }
 
-    //片段着色器的编译
+    //片段着色器1的编译
     const std::string fragmentShaderSource =
         "#version 330 core\n"
         "out vec4 color;\n"
@@ -122,10 +122,30 @@ int main()
         return -3;
     }
 
-    //创建着色器程序
+    //片段着色器2的编译
+    const std::string fragmentShaderSource2 =
+        "#version 330 core\n"
+        "out vec4 color;\n"
+        "void main()\n"
+        "{\n"
+        "    color = vec4(1.0f, 1.0f, 0.0f, 1.0f);\n"
+        "}\n";
+
+    GLuint fs2 = CompileShader(fragmentShaderSource2, GL_FRAGMENT_SHADER);
+    if (!fs2)
+    {
+        return -4;
+    }
+
+    //创建着色器程序1
     GLuint shaderProgram = CreateShaderProgram(vs, fs);
     if (!shaderProgram) {
-        return -4;
+        return -5;
+    }
+
+    GLuint shaderProgram2 = CreateShaderProgram(vs, fs2);
+    if (!shaderProgram2) {
+        return -6;
     }
 
     GLfloat vertices[] = {
@@ -211,8 +231,8 @@ int main()
         //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
 
-        //渲染三角形2
-        glUseProgram(shaderProgram);
+        //渲染三角形
+        glUseProgram(shaderProgram2);
         glBindVertexArray(VAO2);
         glDrawArrays(GL_TRIANGLES, 0, 3);
         //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
